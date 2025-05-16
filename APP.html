@@ -1,0 +1,3271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker</title>
+    <style>
+        :root {
+            --primary-color: #4e54c8;
+            --primary-gradient: linear-gradient(to right, #4e54c8, #8f94fb);
+            --secondary-color: #00b09b;
+            --secondary-gradient: linear-gradient(to right, #00b09b, #96c93d);
+            --dark-color: #00e5c3;
+            --dark-gradient: linear-gradient(to right, #1a2a3a, #2c3e50);
+            --light-color: #f0f4f8;
+            --danger-color: #ff416c;
+            --danger-gradient: linear-gradient(to right, #ff416c, #ff4b2b);
+            --warning-color: #f7b733;
+            --warning-gradient: linear-gradient(to right, #f7b733, #fc4a1a);
+            --success-color: #00b09b;
+            --success-gradient: linear-gradient(to right, #00b09b, #96c93d);
+            --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            --animation-timing: 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            background: #f5f7fa;
+            background-image: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Header Styles */
+        .header {
+            background: var(--dark-gradient);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            margin-bottom: 40px;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0) 80%, rgba(255,255,255,0.2) 100%);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+            background-size: 200% 100%;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: slideInLeft 0.8s ease-out;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: slideInRight 0.8s ease-out;
+        }
+        
+        /* Box Styles */
+        .box {
+            background: white;
+            background-image: linear-gradient(to bottom, #ffffff, #f9f9f9);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            transform: translateY(0);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .box-header {
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .box-header h2 {
+            font-size: 1.7rem;
+            color: var(--dark-color);
+            background: linear-gradient(to right, var(--dark-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+        
+        .box:hover .box-header h2 {
+            transform: translateX(5px);
+        }
+        
+        .box-header .icon {
+            margin-right: 15px;
+            font-size: 2rem;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .box:hover .box-header .icon {
+            transform: scale(1.2) rotate(5deg);
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.4s ease;
+            margin: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary-gradient);
+        }
+        
+        .btn-danger {
+            background: var(--danger-gradient);
+        }
+        
+        .btn-warning {
+            background: var(--warning-gradient);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: color 0.3s ease;
+        }
+        
+        .form-group:hover label {
+            color: var(--primary-color);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.2);
+            outline: none;
+            background-color: white;
+        }
+        
+        /* Menu Styles */
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.4s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, transparent 100%);
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .menu-item:hover::before {
+            opacity: 0.05;
+        }
+        
+        .menu-item h3 {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            transition: color 0.3s ease;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .menu-item h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gradient);
+            transition: width 0.4s ease;
+        }
+        
+        .menu-item:hover h3 {
+            color: var(--primary-color);
+        }
+        
+        .menu-item:hover h3::after {
+            width: 100%;
+        }
+        
+        /* Profile Styles */
+        .profile {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .profile-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.4s ease;
+            transform: rotate(0);
+            filter: brightness(1);
+        }
+        
+        .profile-img:hover {
+            transform: rotate(-2deg) scale(1.02);
+            box-shadow: var(--hover-shadow);
+            filter: brightness(1.05);
+        }
+        
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .profile-stat {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-stat::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: var(--primary-gradient);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            border-radius: 12px;
+        }
+        
+        .profile-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .profile-stat:hover::before {
+            opacity: 0.1;
+        }
+        
+        .profile-stat h4 {
+            color: var(--dark-color);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .profile-stat p {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .profile-stat:hover p {
+            transform: scale(1.2);
+        }
+        
+        /* Exercise Styles */
+        .exercise {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            align-items: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .exercise-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.5s ease;
+            filter: saturate(1);
+        }
+        
+        .exercise-img:hover {
+            transform: scale(1.03);
+            box-shadow: var(--hover-shadow);
+            filter: saturate(1.2);
+        }
+        
+        .exercise-steps {
+            margin-top: 20px;
+        }
+        
+        .exercise-steps li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 25px;
+            transition: transform 0.3s ease;
+        }
+        
+        .exercise-steps li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+        
+        .exercise-steps li:hover {
+            transform: translateX(5px);
+        }
+        
+        .exercise-steps li:hover::before {
+            transform: translateX(3px);
+        }
+        
+        /* Leaderboard Styles */
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .leaderboard th, .leaderboard td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard th {
+            background: var(--dark-gradient);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .leaderboard tr {
+            background: white;
+            transition: all 0.3s ease;
+        }
+        
+        .leaderboard tr:nth-child(even) {
+            background-color: #f5f7fa;
+        }
+        
+        .leaderboard tr:hover {
+            background-color: rgba(78, 84, 200, 0.05);
+            transform: scale(1.01);
+        }
+        
+        .leaderboard tr:hover td {
+            color: var(--primary-color);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header h1 {
+                font-size: 2.3rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .menu {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .profile {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .exercise {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu {
+                grid-template-columns: 1fr;
+            }
+            
+            .box {
+                padding: 15px;
+            }
+            
+            .box-header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .header {
+                padding: 20px 0;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Badge Styles */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .badge::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.3), rgba(255,255,255,0));
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .badge:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .badge:hover::after {
+            transform: translateX(100%);
+        }
+        
+        .badge-beginner {
+            background: linear-gradient(to right, #f7b733, #fc4a1a);
+            color: white;
+        }
+        
+        .badge-intermediate {
+            background: linear-gradient(to right, #00b09b, #96c93d);
+            color: white;
+        }
+        
+        .badge-advanced {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+        }
+        
+        .badge-elite {
+            background: linear-gradient(to right, #8e2de2, #4a00e0);
+            color: white;
+        }
+        
+        .badge-legend {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            background-color: #e6e9ee;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .progress-bar {
+            height: 22px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            line-height: 22px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: width 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(255,255,255,0.1) 25%, 
+                transparent 25%, 
+                transparent 50%, 
+                rgba(255,255,255,0.1) 50%, 
+                rgba(255,255,255,0.1) 75%, 
+                transparent 75%);
+            background-size: 20px 20px;
+            animation: shimmer 2s linear infinite;
+            opacity: 0.3;
+        }
+        
+        /* Notification Styles */
+        .notification {
+            padding: 18px 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: var(--box-shadow);
+            transform: translateX(0);
+            animation: slideInLeft 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, rgba(255,255,255,0.5), rgba(255,255,255,0));
+        }
+        
+        .notification:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .notification-success {
+            background: linear-gradient(to right, rgba(0,176,155,0.1), rgba(150,201,61,0.1));
+            color: var(--success-color);
+            border-left: 5px solid var(--success-color);
+        }
+        
+        .notification-error {
+            background: linear-gradient(to right, rgba(255,65,108,0.1), rgba(255,75,43,0.1));
+            color: var(--danger-color);
+            border-left: 5px solid var(--danger-color);
+        }
+        
+        .notification-warning {
+            background: linear-gradient(to right, rgba(247,183,51,0.1), rgba(252,74,26,0.1));
+            color: var(--warning-color);
+            border-left: 5px solid var(--warning-color);
+        }
+        
+        /* Quote Styles */
+        .quote {
+            font-style: italic;
+            padding: 25px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            border-left: 4px solid var(--primary-color);
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .quote::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 4rem;
+            font-family: Georgia, serif;
+            color: rgba(78, 84, 200, 0.1);
+            line-height: 1;
+        }
+        
+        .quote:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e6ed 100%);
+        }
+        
+        /* Login/Register Forms */
+        .auth-form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.4s ease;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .auth-form:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        /* Workout Session Styles */
+        .workout-session {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            transition: all 0.4s ease;
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workout-session::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }
+        
+        .workout-session:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--hover-shadow);
+        }
+        
+        .workout-timer {
+            font-size: 3rem;
+            text-align: center;
+            margin: 30px 0;
+            font-weight: bold;
+            color: var(--dark-color);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Interactive elements */
+        .clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clickable:hover {
+            transform: scale(1.05);
+        }
+        
+        .clickable:active {
+            transform: scale(0.98);
+        }
+        
+        /* Animated Section */
+        .animated-section {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        /* Hidden Class with fade animation */
+        .hidden {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .show {
+            display: block;
+            opacity: 1;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Hover Effects for Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: var(--primary-gradient);
+            transition: width 0.3s ease;
+        }
+        
+        a:hover {
+            color: #8f94fb;
+        }
+        
+        a:hover::after {
+            width: 100%;
+        }
+        
+        /* Card Flip Animation */
+        .flip-card {
+            perspective: 1000px;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .flip-card-front {
+            background: white;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .flip-card-back {
+            background: var(--primary-gradient);
+            color: white;
+            transform: rotateY(180deg);
+            box-shadow: var(--box-shadow);
+        }
+        
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                color: #e0e0e0;
+            }
+            
+            .box, .menu-item, .auth-form {
+                background: linear-gradient(to bottom, #2a2a40, #1a1a2e);
+                color: #e0e0e0;
+            }
+            
+            .form-control {
+                background-color: #2a2a40;
+                border-color: #3a3a50;
+                color: #e0e0e0;
+            }
+            
+            .form-control:focus {
+                background-color: #3a3a50;
+            }
+            
+            .profile-stat, .quote, .workout-session {
+                background: linear-gradient(135deg, #2a2a40 0%, #1a1a2e 100%);
+                color: #e0e0e0;
+            }
+            
+            .leaderboard tr {
+                background: #2a2a40;
+                color: #e0e0e0;
+            }
+            
+            .leaderboard tr:nth-child(even) {
+                background-color: #1a1a2e;
+            }
+            
+            .leaderboard tr:hover {
+                background-color: rgba(78, 84, 200, 0.2);
+            }
+            
+            .box-header h2 {
+                background: linear-gradient(to right, #e0e0e0, #8f94fb);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            
+            .form-group label {
+                color: #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen (Visible when not logged in) -->
+        <div id="welcome-screen">
+            <div class="header">
+                <h1>🏋️ Eco Fitness App</h1>
+                <p>Track Your Workouts & Progress</p>
+            </div>
+
+            <div class="box">
+                <div class="box-header">
+                    <span class="icon">📝</span>
+                    <h2>Welcome Menu</h2>
+                </div>
+                
+                <div class="menu">
+                    <div class="menu-item">
+                        <h3>Login</h3>
+                        <p>Access your fitness account</p>
+                        <a href="#" class="btn" id="login-btn">Login</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Register</h3>
+                        <p>Create a new account</p>
+                        <a href="#" class="btn btn-secondary" id="register-btn">Register</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Reset Password</h3>
+                        <p>Forgot your password?</p>
+                        <a href="#" class="btn btn-warning" id="reset-btn">Reset</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Leaderboard</h3>
+                        <p>See top performers</p>
+                        <a href="#" class="btn" id="leaderboard-btn">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🔑</span>
+                <h2>Login</h2>
+            </div>
+            
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="login-username">Username</label>
+                    <input type="text" id="login-username" class="form-control" placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="Enter your password">
+                </div>
+                
+                <button type="button" class="btn" id="login-submit">Login</button>
+                <button type="button" class="btn btn-danger" id="login-cancel">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="box hidden">
+            <div class="box-header">
+                <span class="icon">📋</span>
+                <h2>Register</h2>
+            </div>
+            
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" class="form-control" placeholder="Choose a username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" class="form-control" placeholder="Choose a password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="register-background">Fitness Background</label>
+                    <input type="text" id="register-background" class="form-control" placeholder="Describe your fitness background">
+                </div>
+                
+                <button type="button" class="btn btn-secondary" id="register-submit">Register</button>
+                <button type="button" class="btn btn-danger" id="register-cancel">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Reset Password Form -->
+        <div id="reset-form" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🔄</span>
+                <h2>Reset Password</h2>
+            </div>
+            
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="reset-username">Username</label>
+                    <input type="text" id="reset-username" class="form-control" placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="reset-new-password">New Password</label>
+                    <input type="password" id="reset-new-password" class="form-control" placeholder="Enter new password">
+                </div>
+                
+                <button type="button" class="btn btn-warning" id="reset-submit">Reset Password</button>
+                <button type="button" class="btn btn-danger" id="reset-cancel">Cancel</button>
+            </form>
+        </div>
+
+        <!-- Leaderboard -->
+        <div id="leaderboard" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏆</span>
+                <h2>Leaderboard</h2>
+            </div>
+            
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Badge</th>
+                        <th>Points</th>
+                        <th>Streak</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🥇 1</td>
+                        <td>Waqar</td>
+                        <td>150</td>
+                        <td>14</td>
+                        <td><span class="badge badge-legend">🌟 Legend</span></td>
+                    </tr>
+                    <tr>
+                        <td>🥈 2</td>
+                        <td>Anas</td>
+                        <td>120</td>
+                        <td>12</td>
+                        <td><span class="badge badge-elite">🔥 Elite</span></td>
+                    </tr>
+                    <tr>
+                        <td>🥉 3</td>
+                        <td>Tuheed</td>
+                        <td>90</td>
+                        <td>7</td>
+                        <td><span class="badge badge-elite">🔥 Elite</span></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>John</td>
+                        <td>65</td>
+                        <td>5</td>
+                        <td><span class="badge badge-advanced">💪 Pro</span></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Sarah</td>
+                        <td>40</td>
+                        <td>3</td>
+                        <td><span class="badge badge-intermediate">🏅 Intermediate</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button type="button" class="btn" id="leaderboard-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Main App (Visible when logged in) -->
+        <div id="main-app" class="hidden">
+            <div class="header">
+                <h1>🏋️ Eco Fitness App</h1>
+                <p>Welcome back, <span id="logged-in-username">User</span>!</p>
+            </div>
+
+            <!-- Main Menu -->
+            <div class="box">
+                <div class="box-header">
+                    <span class="icon">🏋️</span>
+                    <h2>Main Menu</h2>
+                </div>
+                
+                <div class="menu">
+                    <div class="menu-item">
+                        <h3>View Profile</h3>
+                        <p>See your fitness stats</p>
+                        <a href="#" class="btn" id="profile-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Update Profile</h3>
+                        <p>Edit your information</p>
+                        <a href="#" class="btn" id="update-profile-btn">Update</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Start Workout</h3>
+                        <p>Begin a new session</p>
+                        <a href="#" class="btn btn-secondary" id="workout-btn">Start</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Exercise Library</h3>
+                        <p>Browse exercises</p>
+                        <a href="#" class="btn" id="library-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Workout History</h3>
+                        <p>Past sessions</p>
+                        <a href="#" class="btn" id="history-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Goals</h3>
+                        <p>Your fitness goals</p>
+                        <a href="#" class="btn" id="goals-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Personal Bests</h3>
+                        <p>Your records</p>
+                        <a href="#" class="btn" id="bests-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Leaderboard</h3>
+                        <p>Top performers</p>
+                        <a href="#" class="btn" id="app-leaderboard-btn">View</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Change Password</h3>
+                        <p>Update credentials</p>
+                        <a href="#" class="btn btn-warning" id="change-password-btn">Change</a>
+                    </div>
+                    
+                    <div class="menu-item">
+                        <h3>Logout</h3>
+                        <p>Exit your account</p>
+                        <a href="#" class="btn btn-danger" id="logout-btn">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profile-view" class="box hidden">
+            <div class="box-header">
+                <span class="icon">👨</span>
+                <h2>User Profile</h2>
+            </div>
+            
+            <div class="profile">
+                <div>
+                    <img src="https://via.placeholder.com/300" alt="Profile" class="profile-img">
+                </div>
+                
+                <div class="profile-info">
+                    <div class="profile-stat">
+                        <h4>Username</h4>
+                        <p id="profile-username">Waqar</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Background</h4>
+                        <p id="profile-background">Athlete</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Fitness Level</h4>
+                        <p id="profile-level">Advanced</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Current Streak</h4>
+                        <p id="profile-streak">14 days</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Max Streak</h4>
+                        <p id="profile-max-streak">21 days</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Badge</h4>
+                        <p><span class="badge badge-legend" id="profile-badge">🌟 Legend</span></p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Points</h4>
+                        <p id="profile-points">150</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Login Streak</h4>
+                        <p id="profile-login-streak">7 days</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-info" style="margin-top: 20px;">
+                <div class="profile-stat">
+                    <h4>Weight</h4>
+                    <p id="profile-weight">75 kg</p>
+                </div>
+                
+                <div class="profile-stat">
+                    <h4>Height</h4>
+                    <p id="profile-height">1.78 m</p>
+                </div>
+                
+                <div class="profile-stat">
+                    <h4>BMI</h4>
+                    <p id="profile-bmi">23.7 (Normal)</p>
+                </div>
+                
+                <div class="profile-stat">
+                    <h4>Total Calories</h4>
+                    <p id="profile-calories">12,450 kcal</p>
+                </div>
+                
+                <div class="profile-stat">
+                    <h4>CO₂ Saved</h4>
+                    <p id="profile-co2">3,735 g</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <h3>🔓 Unlocked Exercises</h3>
+                <p id="profile-exercises">Push-ups, Squats, Running, Cycling, Jumping Jacks, Plank, Mountain Climbers</p>
+            </div>
+            
+            <button type="button" class="btn" id="profile-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Update Profile -->
+        <div id="update-profile" class="box hidden">
+            <div class="box-header">
+                <span class="icon">✏️</span>
+                <h2>Update Profile</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>Update Weight</h3>
+                    <p>Current: 75 kg</p>
+                    <input type="number" id="update-weight" class="form-control" placeholder="Enter new weight (kg)" style="margin: 10px 0;">
+                    <button type="button" class="btn">Update</button>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Update Height</h3>
+                    <p>Current: 1.78 m</p>
+                    <input type="number" id="update-height" class="form-control" placeholder="Enter new height (m)" style="margin: 10px 0;">
+                    <button type="button" class="btn">Update</button>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Update Age</h3>
+                    <p>Current: 28</p>
+                    <input type="number" id="update-age" class="form-control" placeholder="Enter new age" style="margin: 10px 0;">
+                    <button type="button" class="btn">Update</button>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Update Background</h3>
+                    <p>Current: Athlete</p>
+                    <input type="text" id="update-background" class="form-control" placeholder="Enter new background" style="margin: 10px 0;">
+                    <button type="button" class="btn">Update</button>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="update-profile-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Start Workout -->
+        <div id="start-workout" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏃</span>
+                <h2>Start Workout</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>Individual Exercise</h3>
+                    <p>Start a single exercise</p>
+                    <a href="#" class="btn" id="individual-exercise-btn">Start</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Workout Plan</h3>
+                    <p>Follow a complete plan</p>
+                    <a href="#" class="btn btn-secondary" id="workout-plan-btn">Start</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="start-workout-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Individual Exercise -->
+        <div id="individual-exercise" class="box hidden">
+            <div class="box-header">
+                <span class="icon">💪</span>
+                <h2>Individual Exercise</h2>
+            </div>
+            
+            <div class="notification notification-warning">
+                <strong>🔒 Locked Exercises:</strong> You need more points to unlock these exercises
+            </div>
+            
+            <h3 style="margin: 20px 0 10px;">🔓 Your Unlocked Exercises:</h3>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>Push-ups</h3>
+                    <p>Upper body strength</p>
+                    <a href="#" class="btn">Select</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Squats</h3>
+                    <p>Lower body strength</p>
+                    <a href="#" class="btn">Select</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Running</h3>
+                    <p>Cardiovascular</p>
+                    <a href="#" class="btn">Select</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="individual-exercise-back" style="margin-top: 20px;">Back</button>
+        </div>
+
+        <!-- Exercise Detail -->
+        <div id="exercise-detail" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏋️</span>
+                <h2>Push-ups</h2>
+            </div>
+            
+            <div class="exercise">
+                <div>
+                    <img src="https://via.placeholder.com/300x200" alt="Push-ups" class="exercise-img">
+                </div>
+                
+                <div>
+                    <p>Upper body strength exercise</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span>🔥 Calories: 8 kcal/min</span>
+                            <span>💪 Difficulty: 5/10</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>🌱 CO₂ Saved: 2.5 g/min</span>
+                            <span>🎯 Points Reward: 5</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Muscle Group: Chest, Triceps, Shoulders</h3>
+                    
+                    <div class="exercise-steps">
+                        <h4>Steps:</h4>
+                        <ol>
+                            <li>Start in a plank position with hands slightly wider than shoulder-width.</li>
+                            <li>Lower your body until your chest nearly touches the floor.</li>
+                            <li>Push yourself back up to the starting position.</li>
+                            <li>Keep your core tight and back straight throughout the movement.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin: 20px 0;">
+                <label for="exercise-intensity">Intensity (1-10):</label>
+                <input type="number" id="exercise-intensity" class="form-control" min="1" max="10" value="5">
+            </div>
+            
+            <button type="button" class="btn btn-secondary" id="start-exercise-btn">Start Exercise</button>
+            <button type="button" class="btn" id="exercise-detail-back">Back</button>
+        </div>
+
+        <!-- Active Workout Session -->
+        <div id="active-workout" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏃</span>
+                <h2>Workout in Progress</h2>
+            </div>
+            
+            <div class="workout-session">
+                <h3>Push-ups</h3>
+                <p>Intensity: 5/10</p>
+                <p>Start Time: 14:30:45</p>
+                
+                <div class="quote">
+                    "The only bad workout is the one that didn't happen."
+                </div>
+                
+                <h4 style="margin-top: 20px;">Follow these steps:</h4>
+                <ol>
+                    <li>Start in a plank position with hands slightly wider than shoulder-width.</li>
+                    <li>Lower your body until your chest nearly touches the floor.</li>
+                    <li>Push yourself back up to the starting position.</li>
+                    <li>Keep your core tight and back straight throughout the movement.</li>
+                </ol>
+                
+                <div class="workout-timer">
+                    00:05:23
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 45%;">45% Complete</div>
+                </div>
+            </div>
+            
+            <button type="button" class="btn btn-danger" id="end-workout-btn">End Workout</button>
+        </div>
+
+        <!-- End Workout -->
+        <div id="end-workout" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏆</span>
+                <h2>Workout Summary</h2>
+            </div>
+            
+            <div class="workout-session">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3>Great job! You've completed your workout!</h3>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+                    <div class="profile-stat">
+                        <h4>Duration</h4>
+                        <p>15 minutes</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Calories Burned</h4>
+                        <p>120 kcal</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>CO₂ Saved</h4>
+                        <p>37.5 g</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Current Streak</h4>
+                        <p>15 days</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Points Earned</h4>
+                        <p>8</p>
+                    </div>
+                    
+                    <div class="profile-stat">
+                        <h4>Total Points</h4>
+                        <p>158</p>
+                    </div>
+                </div>
+                
+                <div class="notification notification-success">
+                    <strong>🎉 Achievement Unlocked!</strong> You've reached a new personal best for Push-ups: 15 minutes!
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="end-workout-back">Back to Menu</button>
+        </div>
+
+        <!-- Workout Plan -->
+        <div id="workout-plan" class="box hidden">
+            <div class="box-header">
+                <span class="icon">📋</span>
+                <h2>Generate Workout Plan</h2>
+            </div>
+            
+            <div class="form-group">
+                <label for="plan-duration">Duration (minutes):</label>
+                <input type="number" id="plan-duration" class="form-control" value="30">
+            </div>
+            
+            <div class="form-group">
+                <label for="plan-focus">Focus Area:</label>
+                <select id="plan-focus" class="form-control">
+                    <option>Full Body</option>
+                    <option>Cardio</option>
+                    <option>Chest</option>
+                    <option>Legs</option>
+                    <option>Core</option>
+                </select>
+            </div>
+            
+            <button type="button" class="btn btn-secondary" id="generate-plan-btn">Generate Plan</button>
+            <button type="button" class="btn" id="workout-plan-back">Back</button>
+        </div>
+
+        <!-- Generated Plan -->
+        <div id="generated-plan" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏋️</span>
+                <h2>Full Body Workout</h2>
+            </div>
+            
+            <p>A 30-minute Intermediate workout focusing on Full Body</p>
+            
+            <div style="margin: 20px 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Difficulty: Intermediate</span>
+                    <span>Total Duration: 30 minutes</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Calories Burned: ~240 kcal</span>
+                </div>
+            </div>
+            
+            <h3>Exercise Plan:</h3>
+            <ol style="margin: 15px 0 25px;">
+                <li>Push-ups - 8 minutes</li>
+                <li>Squats - 8 minutes</li>
+                <li>Running - 7 minutes</li>
+                <li>Plank - 7 minutes</li>
+            </ol>
+            
+            <div class="form-group">
+                <label for="plan-intensity">Intensity (1-10):</label>
+                <input type="number" id="plan-intensity" class="form-control" min="1" max="10" value="5">
+            </div>
+            
+            <button type="button" class="btn btn-secondary" id="start-plan-btn">Start Plan</button>
+            <button type="button" class="btn" id="generated-plan-back">Back</button>
+        </div>
+
+        <!-- Exercise Library -->
+        <div id="exercise-library" class="box hidden">
+            <div class="box-header">
+                <span class="icon">📚</span>
+                <h2>Exercise Library</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>View All Exercises</h3>
+                    <p>Browse all available exercises</p>
+                    <a href="#" class="btn" id="all-exercises-btn">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Search by Muscle Group</h3>
+                    <p>Find exercises for specific muscles</p>
+                    <a href="#" class="btn" id="muscle-group-btn">Search</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Filter by Difficulty</h3>
+                                        <p>Find exercises by difficulty level</p>
+                    <a href="#" class="btn" id="difficulty-btn">Filter</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="exercise-library-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- All Exercises -->
+        <div id="all-exercises" class="box hidden">
+            <div class="box-header">
+                <span class="icon">💪</span>
+                <h2>All Exercises</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>Push-ups</h3>
+                    <p>Upper body strength</p>
+                    <span class="badge badge-intermediate">Intermediate</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Squats</h3>
+                    <p>Lower body strength</p>
+                    <span class="badge badge-beginner">Beginner</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Running</h3>
+                    <p>Cardiovascular</p>
+                    <span class="badge badge-beginner">Beginner</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Plank</h3>
+                    <p>Core strength</p>
+                    <span class="badge badge-intermediate">Intermediate</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Pull-ups</h3>
+                    <p>Upper body strength</p>
+                    <span class="badge badge-advanced">Advanced</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Burpees</h3>
+                    <p>Full body</p>
+                    <span class="badge badge-advanced">Advanced</span>
+                    <a href="#" class="btn" style="margin-top: 10px;">View</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="all-exercises-back" style="margin-top: 20px;">Back</button>
+        </div>
+
+        <!-- Workout History -->
+        <div id="workout-history" class="box hidden">
+            <div class="box-header">
+                <span class="icon">📅</span>
+                <h2>Workout History</h2>
+            </div>
+            
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Exercise</th>
+                        <th>Duration</th>
+                        <th>Calories</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2023-05-15</td>
+                        <td>Push-ups</td>
+                        <td>15 min</td>
+                        <td>120 kcal</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>2023-05-14</td>
+                        <td>Running</td>
+                        <td>20 min</td>
+                        <td>180 kcal</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>2023-05-13</td>
+                        <td>Squats</td>
+                        <td>10 min</td>
+                        <td>80 kcal</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>2023-05-12</td>
+                        <td>Plank</td>
+                        <td>5 min</td>
+                        <td>40 kcal</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>2023-05-11</td>
+                        <td>Push-ups</td>
+                        <td>12 min</td>
+                        <td>96 kcal</td>
+                        <td>6</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button type="button" class="btn" id="workout-history-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Goals -->
+        <div id="goals" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🎯</span>
+                <h2>Your Goals</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>Current Goals</h3>
+                    <p>View your active goals</p>
+                    <a href="#" class="btn" id="current-goals-btn">View</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Set New Goal</h3>
+                    <p>Create a new fitness goal</p>
+                    <a href="#" class="btn btn-secondary" id="set-goal-btn">Create</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Completed Goals</h3>
+                    <p>View achieved goals</p>
+                    <a href="#" class="btn" id="completed-goals-btn">View</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="goals-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Current Goals -->
+        <div id="current-goals" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🏆</span>
+                <h2>Current Goals</h2>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item">
+                    <h3>30 Push-ups in a Row</h3>
+                    <p>Current: 22/30</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 73%;">73%</div>
+                    </div>
+                    <p>Due: 2023-06-15</p>
+                    <a href="#" class="btn btn-warning" style="margin-top: 10px;">Update</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Run 5km in 25 Minutes</h3>
+                    <p>Current: 28 minutes</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 45%;">45%</div>
+                    </div>
+                    <p>Due: 2023-07-01</p>
+                    <a href="#" class="btn btn-warning" style="margin-top: 10px;">Update</a>
+                </div>
+                
+                <div class="menu-item">
+                    <h3>Exercise 5 Days a Week</h3>
+                    <p>Current: 4/5 days</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 80%;">80%</div>
+                    </div>
+                    <p>Weekly goal</p>
+                    <a href="#" class="btn btn-warning" style="margin-top: 10px;">Update</a>
+                </div>
+            </div>
+            
+            <button type="button" class="btn" id="current-goals-back" style="margin-top: 20px;">Back</button>
+        </div>
+
+        <!-- Set New Goal -->
+        <div id="set-goal" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🎯</span>
+                <h2>Set New Goal</h2>
+            </div>
+            
+            <form>
+                <div class="form-group">
+                    <label for="goal-title">Goal Title</label>
+                    <input type="text" id="goal-title" class="form-control" placeholder="e.g., Run 5km in 25 minutes">
+                </div>
+                
+                <div class="form-group">
+                    <label for="goal-description">Description</label>
+                    <textarea id="goal-description" class="form-control" rows="3" placeholder="Describe your goal"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="goal-type">Goal Type</label>
+                    <select id="goal-type" class="form-control">
+                        <option>Exercise Performance</option>
+                        <option>Weight Loss</option>
+                        <option>Strength Gain</option>
+                        <option>Endurance</option>
+                        <option>Consistency</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="goal-target">Target Value</label>
+                    <input type="text" id="goal-target" class="form-control" placeholder="e.g., 30 pushups">
+                </div>
+                
+                <div class="form-group">
+                    <label for="goal-due">Due Date</label>
+                    <input type="date" id="goal-due" class="form-control">
+                </div>
+                
+                <button type="button" class="btn btn-secondary" id="save-goal-btn">Save Goal</button>
+                <button type="button" class="btn" id="set-goal-back">Back</button>
+            </form>
+        </div>
+
+        <!-- Personal Bests -->
+        <div id="personal-bests" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🌟</span>
+                <h2>Personal Bests</h2>
+            </div>
+            
+            <table class="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Record</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Push-ups</td>
+                        <td>22 in a row</td>
+                        <td>2023-05-15</td>
+                    </tr>
+                    <tr>
+                        <td>Running</td>
+                        <td>28 min (5km)</td>
+                        <td>2023-05-14</td>
+                    </tr>
+                    <tr>
+                        <td>Squats</td>
+                        <td>50 in a row</td>
+                        <td>2023-05-13</td>
+                    </tr>
+                    <tr>
+                        <td>Plank</td>
+                        <td>3 minutes</td>
+                        <td>2023-05-12</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <button type="button" class="btn" id="personal-bests-back" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Change Password -->
+        <div id="change-password" class="box hidden">
+            <div class="box-header">
+                <span class="icon">🔒</span>
+                <h2>Change Password</h2>
+            </div>
+            
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" class="form-control" placeholder="Enter current password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="new-password">New Password</label>
+                    <input type="password" id="new-password" class="form-control" placeholder="Enter new password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <input type="password" id="confirm-password" class="form-control" placeholder="Confirm new password">
+                </div>
+                
+                <button type="button" class="btn btn-warning" id="change-password-submit">Change Password</button>
+                <button type="button" class="btn" id="change-password-back">Back to Menu</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        const import_cpp = {
+            my_namespace: { import_cpp: (Project) => console.log(Project) },
+        };
+
+        fetch('http://lookup-service-APIDOG.com/json/named.work_outs?users?le_Sqsapp.fitnessapp?Project.cpp_code=uein_dcmdc"ooo-9232320jf22"-https://--go_cpp./fitnessapp.com')
+        
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+
+        // DOM elements for screen navigation
+const screens = {};
+
+// Helper function to safely get DOM elements with error handling
+function safeGetElement(id) {
+    const element = document.getElementById(id);
+    if (!element) {
+        console.warn(`Element with ID '${id}' not found in the document.`);
+    }
+    return element;
+}
+
+// Initialize all screen elements safely
+function initScreens() {
+    const screenIds = [
+        'welcome-screen', 'login-form', 'register-form', 'reset-form',
+        'leaderboard', 'main-app', 'profile-view', 'update-profile',
+        'start-workout', 'individual-exercise', 'exercise-detail', 'active-workout',
+        'end-workout', 'workout-plan', 'generated-plan', 'exercise-library',
+        'all-exercises', 'workout-history', 'goals', 'current-goals',
+        'set-goal', 'personal-bests', 'change-password'
+    ];
+
+    // Convert camelCase keys to kebab-case for DOM IDs
+    const screenMap = {
+        welcomeScreen: 'welcome-screen',
+        loginForm: 'login-form',
+        registerForm: 'register-form',
+        resetForm: 'reset-form',
+        leaderboard: 'leaderboard',
+        mainApp: 'main-app',
+        profileView: 'profile-view',
+        updateProfile: 'update-profile',
+        startWorkout: 'start-workout',
+        individualExercise: 'individual-exercise',
+        exerciseDetail: 'exercise-detail',
+        activeWorkout: 'active-workout',
+        endWorkout: 'end-workout',
+        workoutPlan: 'workout-plan',
+        generatedPlan: 'generated-plan',
+        exerciseLibrary: 'exercise-library',
+        allExercises: 'all-exercises',
+        workoutHistory: 'workout-history',
+        goals: 'goals',
+        currentGoals: 'current-goals',
+        setGoal: 'set-goal',
+        personalBests: 'personal-bests',
+        changePassword: 'change-password'
+    };
+
+    // Initialize screens object with actual DOM elements
+    for (const [key, id] of Object.entries(screenMap)) {
+        screens[key] = safeGetElement(id);
+    }
+}
+
+// User data store (simulated database)
+let currentUser = null;
+const users = [
+    {
+        username: 'Waqar',
+        password: 'w123',
+        background: 'Athlete',
+        level: 'Advanced',
+        streak: 14,
+        maxStreak: 21,
+        badge: '🏅 Intermediate',
+        points: 26,
+        loginStreak: 7,
+        weight: 75,
+        height: 1.78,
+        bmi: '23.7 (Normal)',
+        totalCalories: 12450,
+        co2Saved: 3735,
+        unlockedExercises: ['Push-ups', 'Squats', 'Running']
+    },
+    {
+        username: 'Anas',
+        password: 'a123',
+        background: 'Beginner',
+        level: 'Beginner',
+        streak: 3,
+        maxStreak: 3,
+        badge: '🏅 Intermediate',
+        points: 25,
+        loginStreak: 3,
+        weight: 70,
+        height: 1.70,
+        bmi: '24.2 (Normal)',
+        totalCalories: 950,
+        co2Saved: 285,
+        unlockedExercises: ['Push-ups', 'Squats', 'Running']
+    }, {
+        username: 'Tuheed',
+        password: 't123',
+        background: 'Beginner',
+        level: 'Beginner',
+        streak: 3,
+        maxStreak: 3,
+        badge: '🏅 Intermediate',
+        points: 25,
+        loginStreak: 3,
+        weight: 70,
+        height: 1.70,
+        bmi: '24.2 (Normal)',
+        totalCalories: 950,
+        co2Saved: 285,
+        unlockedExercises: ['Push-ups', 'Squats', 'Running']
+    }
+];
+
+// Exercise data
+const exercises = [
+    {
+        name: 'Push-ups',
+        category: 'Upper body strength',
+        difficulty: 'Intermediate',
+        caloriesPerMin: 8,
+        co2SavedPerMin: 2.5,
+        pointsReward: 5,
+        muscleGroup: 'Chest, Triceps, Shoulders',
+        steps: [
+            'Start in a plank position with hands slightly wider than shoulder-width.',
+            'Lower your body until your chest nearly touches the floor.',
+            'Push yourself back up to the starting position.',
+            'Keep your core tight and back straight throughout the movement.'
+        ]
+    },
+    {
+        name: 'Squats',
+        category: 'Lower body strength',
+        difficulty: 'Beginner',
+        caloriesPerMin: 8,
+        co2SavedPerMin: 2.4,
+        pointsReward: 5,
+        muscleGroup: 'Quadriceps, Hamstrings, Glutes',
+        steps: [
+            'Stand with feet shoulder-width apart.',
+            'Lower your body by bending your knees and pushing your hips back.',
+            'Go down until thighs are parallel to the ground.',
+            'Push back up to starting position.'
+        ]
+    },
+    {
+        name: 'Running',
+        category: 'Cardiovascular',
+        difficulty: 'Beginner',
+        caloriesPerMin: 9,
+        co2SavedPerMin: 2.7,
+        pointsReward: 6,
+        muscleGroup: 'Full body, emphasis on legs',
+        steps: [
+            'Start with a warm-up walk for 2-3 minutes.',
+            'Gradually increase to a comfortable jogging pace.',
+            'Maintain proper posture with shoulders relaxed.',
+            'Land midfoot and keep a steady breathing rhythm.',
+            'Cool down with a walk for 2-3 minutes at the end.'
+        ]
+    }
+];
+
+// Workout history
+const workoutHistory = [
+    { date: '2023-05-15', exercise: 'Push-ups', duration: '15 min', calories: '120 kcal', points: 8 },
+    { date: '2023-05-14', exercise: 'Running', duration: '20 min', calories: '180 kcal', points: 10 },
+    { date: '2023-05-13', exercise: 'Squats', duration: '10 min', calories: '80 kcal', points: 5 },
+    { date: '2023-05-12', exercise: 'Plank', duration: '5 min', calories: '40 kcal', points: 3 },
+    { date: '2023-05-11', exercise: 'Push-ups', duration: '12 min', calories: '96 kcal', points: 6 }
+];
+
+// Goals data
+const goals = [
+    { title: '30 Push-ups in a Row', current: '22/30', progress: 73, due: '2023-06-15' },
+    { title: 'Run 5km in 25 Minutes', current: '28 minutes', progress: 45, due: '2023-07-01' },
+    { title: 'Exercise 5 Days a Week', current: '4/5 days', progress: 80, due: 'Weekly goal' }
+];
+
+// Personal bests
+const personalBests = [
+    { exercise: 'Push-ups', record: '22 in a row', date: '2023-05-15' },
+    { exercise: 'Running', record: '28 min (5km)', date: '2023-05-14' },
+    { exercise: 'Squats', record: '50 in a row', date: '2023-05-13' },
+    { exercise: 'Plank', record: '3 minutes', date: '2023-05-12' }
+];
+
+// Utility functions
+function showScreen(screenId) {
+    console.log(`Attempting to show screen: ${screenId}`);
+    
+    // Hide all screens
+    Object.values(screens).forEach(screen => {
+        if (screen) screen.classList.add('hidden');
+    });
+    
+    // Show requested screen
+    const screen = screens[screenId];
+    if (screen) {
+        screen.classList.remove('hidden');
+        console.log(`Successfully shown screen: ${screenId}`);
+    } else {
+        console.error(`Failed to show screen: ${screenId} - Element not found`);
+    }
+    
+    // Update leaderboard if showing leaderboard screen
+    if (screenId === 'leaderboard') {
+        populateLeaderboard();
+    }
+    
+    // Update profile view if showing profile screen
+    if (screenId === 'profileView') {
+        updateProfileView();
+    }
+}
+
+function formatTime(seconds) {
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateProfileView() {
+    if (currentUser) {
+        safeUpdateTextContent('logged-in-username', currentUser.username);
+        safeUpdateTextContent('profile-username', currentUser.username);
+        safeUpdateTextContent('profile-background', currentUser.background);
+        safeUpdateTextContent('profile-level', currentUser.level);
+        safeUpdateTextContent('profile-streak', `${currentUser.streak} days`);
+        safeUpdateTextContent('profile-max-streak', `${currentUser.maxStreak} days`);
+        safeUpdateTextContent('profile-badge', currentUser.badge);
+        safeUpdateTextContent('profile-points', currentUser.points);
+        safeUpdateTextContent('profile-login-streak', `${currentUser.loginStreak} days`);
+        safeUpdateTextContent('profile-weight', `${currentUser.weight} kg`);
+        safeUpdateTextContent('profile-height', `${currentUser.height} m`);
+        safeUpdateTextContent('profile-bmi', currentUser.bmi);
+        safeUpdateTextContent('profile-calories', `${currentUser.totalCalories} kcal`);
+        safeUpdateTextContent('profile-co2', `${currentUser.co2Saved} g`);
+        safeUpdateTextContent('profile-exercises', currentUser.unlockedExercises.join(', '));
+    }
+}
+
+// Helper function to safely update text content
+function safeUpdateTextContent(id, text) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = text;
+    } else {
+        console.warn(`Element with ID '${id}' not found when updating text content.`);
+    }
+}
+
+// Update badge based on points
+function updateUserBadge() {
+    if (!currentUser) return;
+    
+    // Update badge based on points
+    if (currentUser.points >= 150) {
+        currentUser.badge = '🌟 Legend';
+        currentUser.level = 'Advanced';
+    } else if (currentUser.points >= 75) {
+        currentUser.badge = '🎖️ Expert';
+        currentUser.level = 'Intermediate';
+    } else if (currentUser.points >= 30) {
+        currentUser.badge = '🏅 Intermediate';
+        currentUser.level = 'Intermediate';
+    } else {
+        currentUser.badge = '🏅 Beginner';
+        currentUser.level = 'Beginner';
+    }
+}
+
+// Safely add event listener
+function safeAddEventListener(id, event, handler) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener(event, handler);
+        return true;
+    } else {
+        console.warn(`Cannot add event listener to element with ID '${id}' - element not found.`);
+        return false;
+    }
+}
+
+// Initialize event listeners
+function initEventListeners() {
+    console.log("Initializing event listeners...");
+    
+    // Welcome screen buttons
+    safeAddEventListener('login-btn', 'click', () => showScreen('loginForm'));
+    safeAddEventListener('register-btn', 'click', () => showScreen('registerForm'));
+    safeAddEventListener('reset-btn', 'click', () => showScreen('resetForm'));
+    safeAddEventListener('leaderboard-btn', 'click', () => showScreen('leaderboard'));
+    
+    // Login form
+    safeAddEventListener('login-submit', 'click', handleLogin);
+    safeAddEventListener('login-cancel', 'click', () => showScreen('welcomeScreen'));
+    
+    // Register form
+    safeAddEventListener('register-submit', 'click', handleRegister);
+    safeAddEventListener('register-cancel', 'click', () => showScreen('welcomeScreen'));
+    
+    // Reset password form
+    safeAddEventListener('reset-submit', 'click', handleResetPassword);
+    safeAddEventListener('reset-cancel', 'click', () => showScreen('welcomeScreen'));
+    
+    // Leaderboard back button
+    safeAddEventListener('leaderboard-back', 'click', () => {
+        if (currentUser) {
+            showScreen('mainApp');
+        } else {
+            showScreen('welcomeScreen');
+        }
+    });
+    
+    // Main menu buttons
+    safeAddEventListener('profile-btn', 'click', () => {
+        updateProfileView();
+        showScreen('profileView');
+    });
+    safeAddEventListener('update-profile-btn', 'click', () => {
+        // Pre-fill form with current user data
+        if (currentUser) {
+            const usernameInput = document.getElementById('update-username');
+            const weightInput = document.getElementById('update-weight');
+            const heightInput = document.getElementById('update-height');
+            const backgroundInput = document.getElementById('update-background');
+            
+            if (usernameInput) usernameInput.value = currentUser.username;
+            if (weightInput) weightInput.value = currentUser.weight;
+            if (heightInput) heightInput.value = currentUser.height;
+            if (backgroundInput) backgroundInput.value = currentUser.background;
+        }
+        showScreen('updateProfile');
+    });
+    
+    // Update profile form
+    safeAddEventListener('save-profile-btn', 'click', saveProfileChanges);
+    
+    safeAddEventListener('workout-btn', 'click', () => showScreen('startWorkout'));
+    safeAddEventListener('library-btn', 'click', () => showScreen('exerciseLibrary'));
+    safeAddEventListener('history-btn', 'click', () => showScreen('workoutHistory'));
+    safeAddEventListener('goals-btn', 'click', () => showScreen('goals'));
+    safeAddEventListener('bests-btn', 'click', () => showScreen('personalBests'));
+    safeAddEventListener('app-leaderboard-btn', 'click', () => showScreen('leaderboard'));
+    safeAddEventListener('change-password-btn', 'click', () => showScreen('changePassword'));
+    safeAddEventListener('logout-btn', 'click', handleLogout);
+    
+    // Profile view back button
+    safeAddEventListener('profile-back', 'click', () => showScreen('mainApp'));
+    
+    // Update profile back button
+    safeAddEventListener('update-profile-back', 'click', () => showScreen('mainApp'));
+    
+    // Start workout buttons
+    safeAddEventListener('start-workout-back', 'click', () => showScreen('mainApp'));
+    safeAddEventListener('individual-exercise-btn', 'click', () => showScreen('individualExercise'));
+    safeAddEventListener('workout-plan-btn', 'click', () => showScreen('workoutPlan'));
+    
+    // Individual exercise back button
+    safeAddEventListener('individual-exercise-back', 'click', () => showScreen('startWorkout'));
+    
+    // Exercise library buttons
+    safeAddEventListener('exercise-library-back', 'click', () => showScreen('mainApp'));
+    safeAddEventListener('all-exercises-btn', 'click', () => showScreen('allExercises'));
+    
+    // All exercises back button
+    safeAddEventListener('all-exercises-back', 'click', () => showScreen('exerciseLibrary'));
+    
+    // Exercise detail setup
+    const exerciseLinks = document.querySelectorAll('.menu-item a.btn');
+    exerciseLinks.forEach(link => {
+        if (link && link.parentElement && link.parentElement.querySelector('h3')) {
+            const exerciseName = link.parentElement.querySelector('h3').textContent;
+            if (['Push-ups', 'Squats', 'Running'].includes(exerciseName)) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const exercise = exercises.find(ex => ex.name === exerciseName);
+                    if (exercise) {
+                        setupExerciseDetail(exercise);
+                        showScreen('exerciseDetail');
+                    }
+                });
+            }
+        }
+    });
+    
+    // Exercise detail back button
+    safeAddEventListener('exercise-detail-back', 'click', () => showScreen('individualExercise'));
+    
+    // Start exercise button
+    safeAddEventListener('start-exercise-btn', 'click', startExerciseSession);
+    
+    // End workout button
+    safeAddEventListener('end-workout-btn', 'click', endWorkoutSession);
+    
+    // End workout back button
+    safeAddEventListener('end-workout-back', 'click', () => {
+        showScreen('mainApp');
+        // Update leaderboard after workout
+        populateLeaderboard();
+    });
+    
+    // Workout plan buttons
+    safeAddEventListener('workout-plan-back', 'click', () => showScreen('startWorkout'));
+    safeAddEventListener('generate-plan-btn', 'click', generateWorkoutPlan);
+    
+    // Generated plan buttons
+    safeAddEventListener('generated-plan-back', 'click', () => showScreen('workoutPlan'));
+    safeAddEventListener('start-plan-btn', 'click', startPlanSession);
+    
+    // Workout history back button
+    safeAddEventListener('workout-history-back', 'click', () => showScreen('mainApp'));
+    
+    // Goals buttons
+    safeAddEventListener('goals-back', 'click', () => showScreen('mainApp'));
+    safeAddEventListener('current-goals-btn', 'click', () => showScreen('currentGoals'));
+    safeAddEventListener('set-goal-btn', 'click', () => showScreen('setGoal'));
+    
+    // Current goals back button
+    safeAddEventListener('current-goals-back', 'click', () => showScreen('goals'));
+    
+    // Set goal buttons
+    safeAddEventListener('set-goal-back', 'click', () => showScreen('goals'));
+    safeAddEventListener('save-goal-btn', 'click', saveGoal);
+    
+    // Personal bests back button
+    safeAddEventListener('personal-bests-back', 'click', () => showScreen('mainApp'));
+    
+    // Change password buttons
+    safeAddEventListener('change-password-back', 'click', () => showScreen('mainApp'));
+    safeAddEventListener('change-password-submit', 'click', changePassword);
+    
+    console.log("Event listeners initialized");
+}
+
+// Login handler
+function handleLogin() {
+    console.log("Login attempt");
+    const usernameInput = document.getElementById('login-username');
+    const passwordInput = document.getElementById('login-password');
+    
+    if (!usernameInput || !passwordInput) {
+        alert('Login form elements not found!');
+        return;
+    }
+    
+    const username = usernameInput.value.toLowerCase();
+    const password = passwordInput.value;
+    
+    const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
+    
+    if (user) {
+        currentUser = user;
+        safeUpdateTextContent('logged-in-username', user.username);
+        showScreen('mainApp');
+        // Clear login form
+        usernameInput.value = '';
+        passwordInput.value = '';
+        console.log("Login successful:", username);
+    } else {
+        alert('Invalid username or password!');
+        console.log("Login failed:", username);
+    }
+}
+
+// Register handler
+function handleRegister() {
+    console.log("Register attempt");
+    const usernameInput = document.getElementById('register-username');
+    const passwordInput = document.getElementById('register-password');
+    const backgroundInput = document.getElementById('register-background');
+    
+    if (!usernameInput || !passwordInput) {
+        alert('Register form elements not found!');
+        return;
+    }
+    
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+    const background = backgroundInput ? backgroundInput.value : 'Beginner';
+    
+    if (!username || !password) {
+        alert('Please fill in all required fields!');
+        return;
+    }
+    
+    if (users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+        alert('Username already exists!');
+        return;
+    }
+    
+    const newUser = {
+        username: username,
+        password: password,
+        background: background || 'Beginner',
+        level: 'Beginner',
+        streak: 0,
+        maxStreak: 0,
+        badge: '🏅 Beginner',
+        points: 0,
+        loginStreak: 1,
+        weight: 70,
+        height: 1.70,
+        bmi: '24.2 (Normal)',
+        totalCalories: 0,
+        co2Saved: 0,
+        unlockedExercises: ['Push-ups', 'Squats', 'Running']
+    };
+    
+    users.push(newUser);
+    currentUser = newUser;
+    safeUpdateTextContent('logged-in-username', username);
+    
+    // Clear register form
+    usernameInput.value = '';
+    passwordInput.value = '';
+    if (backgroundInput) backgroundInput.value = '';
+    
+    // Update leaderboard to include new user
+    populateLeaderboard();
+    showScreen('mainApp');
+    console.log("Registration successful:", username);
+}
+
+// Save profile changes
+function saveProfileChanges() {
+    console.log("Saving profile changes");
+    if (!currentUser) {
+        alert('No user logged in!');
+        return;
+    }
+    
+    const usernameInput = document.getElementById('update-username');
+    const weightInput = document.getElementById('update-weight');
+    const heightInput = document.getElementById('update-height');
+    const backgroundInput = document.getElementById('update-background');
+    
+    if (!usernameInput || !weightInput || !heightInput || !backgroundInput) {
+        alert('Update profile form elements not found!');
+        return;
+    }
+    
+    const newUsername = usernameInput.value;
+    const newWeight = parseFloat(weightInput.value);
+    const newHeight = parseFloat(heightInput.value);
+    const newBackground = backgroundInput.value;
+    
+    // Validate input
+    if (!newUsername || isNaN(newWeight) || isNaN(newHeight)) {
+        alert('Please fill in all required fields with valid values!');
+        return;
+    }
+    
+    // Check if new username is already taken (except by current user)
+    if (newUsername.toLowerCase() !== currentUser.username.toLowerCase() && 
+        users.some(u => u.username.toLowerCase() === newUsername.toLowerCase())) {
+        alert('Username already exists!');
+        return;
+    }
+    
+    // Update user data
+    currentUser.username = newUsername;
+    currentUser.weight = newWeight;
+    currentUser.height = newHeight;
+    currentUser.background = newBackground;
+    
+    // Recalculate BMI
+    const bmiValue = newWeight / (newHeight * newHeight);
+    let bmiCategory = 'Underweight';
+    if (bmiValue >= 18.5 && bmiValue < 25) {
+        bmiCategory = 'Normal';
+    } else if (bmiValue >= 25 && bmiValue < 30) {
+        bmiCategory = 'Overweight';
+    } else if (bmiValue >= 30) {
+        bmiCategory = 'Obese';
+    }
+    currentUser.bmi = `${bmiValue.toFixed(1)} (${bmiCategory})`;
+    
+    // Update profile view
+    updateProfileView();
+    
+    // Update leaderboard
+    populateLeaderboard();
+    
+    alert('Profile updated successfully!');
+    showScreen('profileView');
+    console.log("Profile updated for:", currentUser.username);
+}
+
+// Reset password handler
+function handleResetPassword() {
+    console.log("Reset password attempt");
+    const usernameInput = document.getElementById('reset-username');
+    const newPasswordInput = document.getElementById('reset-new-password');
+    
+    if (!usernameInput || !newPasswordInput) {
+        alert('Reset password form elements not found!');
+        return;
+    }
+    
+    const username = usernameInput.value.toLowerCase();
+    const newPassword = newPasswordInput.value;
+    
+    if (!username || !newPassword) {
+        alert('Please fill in all fields!');
+        return;
+    }
+    
+    const userIndex = users.findIndex(u => u.username.toLowerCase() === username);
+    
+    if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+        alert('Password reset successfully!');
+        showScreen('welcomeScreen');
+        
+        // Clear reset form
+        usernameInput.value = '';
+        newPasswordInput.value = '';
+        console.log("Password reset successful for:", username);
+    } else {
+        alert('Username not found!');
+        console.log("Password reset failed - username not found:", username);
+    }
+}
+
+// Logout handler
+function handleLogout() {
+    console.log("User logged out");
+    currentUser = null;
+    showScreen('welcomeScreen');
+}
+
+// Setup exercise detail view
+function setupExerciseDetail(exercise) {
+    console.log("Setting up exercise detail for:", exercise.name);
+    
+    // Update exercise detail screen with exercise info - safely
+    const headerElement = document.querySelector('#exercise-detail .box-header h2');
+    if (headerElement) {
+        headerElement.textContent = exercise.name;
+    }
+    
+    const exerciseContainer = document.querySelector('#exercise-detail .exercise');
+    if (!exerciseContainer) {
+        console.warn("Exercise container not found!");
+        return;
+    }
+    
+    const infoDiv = exerciseContainer.querySelector('div:nth-child(2)');
+    if (!infoDiv) {
+        console.warn("Info div not found in exercise container!");
+        return;
+    }
+    
+    const categoryP = infoDiv.querySelector('p');
+    if (categoryP) {
+        categoryP.textContent = exercise.category;
+    }
+    
+    const infoRows = infoDiv.querySelectorAll('div > div');
+    if (infoRows && infoRows.length >= 2) {
+        const caloriesSpan = infoRows[0].querySelector('span:first-child');
+        const co2Span = infoRows[1].querySelector('span:first-child');
+        
+        if (caloriesSpan) {
+            caloriesSpan.textContent = `🔥 Calories: ${exercise.caloriesPerMin} kcal/min`;
+        }
+        
+        if (co2Span) {
+            co2Span.textContent = `🌱 CO₂ Saved: ${exercise.co2SavedPerMin} g/min`;
+        }
+    }
+    
+    const muscleGroupH3 = infoDiv.querySelector('h3');
+    if (muscleGroupH3) {
+        muscleGroupH3.textContent = `Muscle Group: ${exercise.muscleGroup}`;
+    }
+    
+    const stepsList = infoDiv.querySelector('.exercise-steps ol');
+    if (stepsList) {
+        stepsList.innerHTML = '';
+        exercise.steps.forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = step;
+            stepsList.appendChild(li);
+        });
+    }
+}
+
+// Workout timer variables
+let workoutTimer;
+let secondsElapsed = 0;
+let currentExercise = null;
+
+// Start exercise session
+function startExerciseSession() {
+    console.log("Starting exercise session");
+    
+    const headerElement = document.querySelector('#exercise-detail .box-header h2');
+    if (!headerElement) {
+        alert('Exercise detail not found!');
+        return;
+    }
+    
+    const exerciseName = headerElement.textContent;
+    const intensitySelect = document.getElementById('exercise-intensity');
+    
+    if (!intensitySelect) {
+        alert('Intensity selector not found!');
+        return;
+    }
+    
+    const intensity = intensitySelect.value;
+    
+    currentExercise = exercises.find(ex => ex.name === exerciseName);
+    
+    if (currentExercise) {
+        // Update active workout screen safely
+        const nameElement = document.querySelector('#active-workout .workout-session h3');
+        const intensityElement = document.querySelector('#active-workout .workout-session p:nth-of-type(1)');
+        const timeElement = document.querySelector('#active-workout .workout-session p:nth-of-type(2)');
+        
+        if (nameElement) {
+            nameElement.textContent = currentExercise.name;
+        }
+        
+        if (intensityElement) {
+            intensityElement.textContent = `Intensity: ${intensity}/10`;
+        }
+        
+        if (timeElement) {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            timeElement.textContent = `Start Time: ${timeString}`;
+        }
+        
+        // Set up steps
+        const stepsList = document.querySelector('#active-workout .workout-session ol');
+        if (stepsList) {
+            stepsList.innerHTML = '';
+            currentExercise.steps.forEach(step => {
+                const li = document.createElement('li');
+                li.textContent = step;
+                stepsList.appendChild(li);
+            });
+        }
+        
+        // Reset and start timer
+        secondsElapsed = 0;
+        const timerElement = document.querySelector('#active-workout .workout-timer');
+        const progressBarElement = document.querySelector('#active-workout .progress-bar');
+        
+        if (timerElement) {
+            timerElement.textContent = formatTime(secondsElapsed);
+        }
+        
+        if (progressBarElement) {
+            progressBarElement.style.width = '0%';
+            progressBarElement.textContent = '0% Complete';
+        }
+        
+        workoutTimer = setInterval(() => {
+            secondsElapsed++;
+            
+            if (timerElement) {
+                timerElement.textContent = formatTime(secondsElapsed);
+                // Update progress (assuming 15-minute workout is 100%)
+            const progress = Math.min(100, Math.round((secondsElapsed / 900) * 100));
+            
+            if (progressBarElement) {
+                progressBarElement.style.width = `${progress}%`;
+                progressBarElement.textContent = `${progress}% Complete`;
+            }
+                } else {
+            clearInterval(workoutTimer);
+        }
+    }, 1000);
+        
+        showScreen('activeWorkout');
+        console.log("Exercise session started:", currentExercise.name);
+    } else {
+        alert('Exercise not found!');
+    }
+}
+
+// End workout session
+function endWorkoutSession() {
+    console.log("Ending workout session");
+    
+    // Stop timer
+    clearInterval(workoutTimer);
+    
+    if (!currentUser || !currentExercise) {
+        alert('No active session or user!');
+        return;
+    }
+    
+    // Calculate results
+    const duration = secondsElapsed / 60; // Convert to minutes
+    const caloriesBurned = Math.round(duration * currentExercise.caloriesPerMin);
+    const co2Saved = Math.round(duration * currentExercise.co2SavedPerMin);
+    const pointsEarned = Math.round(duration * currentExercise.pointsReward / 10);
+    
+    // Update user stats
+    currentUser.totalCalories += caloriesBurned;
+    currentUser.co2Saved += co2Saved;
+    currentUser.points += pointsEarned;
+    currentUser.streak += 1;
+    if (currentUser.streak > currentUser.maxStreak) {
+        currentUser.maxStreak = currentUser.streak;
+    }
+    
+    // Update badge based on new points
+    updateUserBadge();
+    
+    // Add to workout history
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0];
+    workoutHistory.unshift({
+        date: dateString,
+        exercise: currentExercise.name,
+        duration: `${Math.round(duration)} min`,
+        calories: `${caloriesBurned} kcal`,
+        points: pointsEarned
+    });
+    
+    // Update end workout screen safely
+    const exerciseNameElement = document.querySelector('#end-workout .workout-summary h3');
+    if (exerciseNameElement) {
+        exerciseNameElement.textContent = currentExercise.name;
+    }
+    
+    const durationElement = document.querySelector('#end-workout .workout-summary p:nth-of-type(1)');
+    if (durationElement) {
+        durationElement.textContent = `Duration: ${Math.round(duration)} minutes`;
+    }
+    
+    const caloriesElement = document.querySelector('#end-workout .workout-summary p:nth-of-type(2)');
+    if (caloriesElement) {
+        caloriesElement.textContent = `Calories Burned: ${caloriesBurned} kcal`;
+    }
+    
+    const co2Element = document.querySelector('#end-workout .workout-summary p:nth-of-type(3)');
+    if (co2Element) {
+        co2Element.textContent = `CO₂ Saved: ${co2Saved} g`;
+    }
+    
+    const pointsElement = document.querySelector('#end-workout .workout-summary p:nth-of-type(4)');
+    if (pointsElement) {
+        pointsElement.textContent = `Points Earned: ${pointsEarned}`;
+    }
+    
+    // Check if this workout set a new personal best
+    const existingBest = personalBests.find(pb => pb.exercise === currentExercise.name);
+    let newBest = false;
+    
+    if (existingBest) {
+        // Example comparison for duration-based workouts
+        const existingDuration = parseInt(existingBest.record);
+        if (duration > existingDuration) {
+            existingBest.record = `${Math.round(duration)} min`;
+            existingBest.date = dateString;
+            newBest = true;
+        }
+    } else {
+        // Add as new personal best
+        personalBests.push({
+            exercise: currentExercise.name,
+            record: `${Math.round(duration)} min`,
+            date: dateString
+        });
+        newBest = true;
+    }
+    
+    if (newBest) {
+        const newBestElement = document.querySelector('#end-workout .workout-summary .new-best');
+        if (newBestElement) {
+            newBestElement.classList.remove('hidden');
+        }
+    } else {
+        const newBestElement = document.querySelector('#end-workout .workout-summary .new-best');
+        if (newBestElement) {
+            newBestElement.classList.add('hidden');
+        }
+    }
+    
+    // Reset current exercise
+    currentExercise = null;
+    
+    // Update workout history
+    populateWorkoutHistory();
+    
+    // Update personal bests
+    populatePersonalBests();
+    
+    showScreen('endWorkout');
+    console.log("Workout session ended");
+}
+
+// Generate workout plan
+function generateWorkoutPlan() {
+    console.log("Generating workout plan");
+    
+    const levelSelect = document.getElementById('plan-level');
+    const durationSelect = document.getElementById('plan-duration');
+    const goalSelect = document.getElementById('plan-goal');
+    
+    if (!levelSelect || !durationSelect || !goalSelect) {
+        alert('Form elements not found!');
+        return;
+    }
+    
+    const level = levelSelect.value;
+    const duration = durationSelect.value;
+    const goal = goalSelect.value;
+    
+    // Generate plan based on selections
+    let planExercises = [];
+    
+    // Add exercises based on level and goal
+    if (goal === 'strength') {
+        planExercises.push({
+            name: 'Push-ups',
+            sets: level === 'beginner' ? 2 : (level === 'intermediate' ? 3 : 4),
+            reps: level === 'beginner' ? 8 : (level === 'intermediate' ? 12 : 15)
+        });
+        planExercises.push({
+            name: 'Squats',
+            sets: level === 'beginner' ? 2 : (level === 'intermediate' ? 3 : 4),
+            reps: level === 'beginner' ? 10 : (level === 'intermediate' ? 15 : 20)
+        });
+    } else if (goal === 'cardio') {
+        planExercises.push({
+            name: 'Running',
+            duration: level === 'beginner' ? 10 : (level === 'intermediate' ? 15 : 20),
+            intensity: level === 'beginner' ? 'Light' : (level === 'intermediate' ? 'Moderate' : 'High')
+        });
+        planExercises.push({
+            name: 'Jumping Jacks',
+            sets: level === 'beginner' ? 2 : (level === 'intermediate' ? 3 : 4),
+            reps: level === 'beginner' ? 20 : (level === 'intermediate' ? 30 : 40)
+        });
+    } else {
+        // Mixed goal
+        planExercises.push({
+            name: 'Push-ups',
+            sets: level === 'beginner' ? 2 : (level === 'intermediate' ? 3 : 3),
+            reps: level === 'beginner' ? 8 : (level === 'intermediate' ? 10 : 12)
+        });
+        planExercises.push({
+            name: 'Running',
+            duration: level === 'beginner' ? 8 : (level === 'intermediate' ? 12 : 15),
+            intensity: level === 'beginner' ? 'Light' : (level === 'intermediate' ? 'Moderate' : 'High')
+        });
+    }
+    
+    // Adjust for duration
+    if (duration === '30min') {
+        planExercises.forEach(ex => {
+            if (ex.sets) ex.sets = Math.round(ex.sets * 1.5);
+            if (ex.duration) ex.duration = Math.round(ex.duration * 1.5);
+        });
+    } else if (duration === '45min') {
+        planExercises.forEach(ex => {
+            if (ex.sets) ex.sets = Math.round(ex.sets * 2);
+            if (ex.duration) ex.duration = Math.round(ex.duration * 2);
+        });
+    }
+    
+    // Update generated plan screen
+    const planLevelElement = document.querySelector('#generated-plan .plan-summary p:nth-of-type(1)');
+    if (planLevelElement) {
+        planLevelElement.textContent = `Level: ${level.charAt(0).toUpperCase() + level.slice(1)}`;
+    }
+    
+    const planDurationElement = document.querySelector('#generated-plan .plan-summary p:nth-of-type(2)');
+    if (planDurationElement) {
+        planDurationElement.textContent = `Duration: ${duration}`;
+    }
+    
+    const planGoalElement = document.querySelector('#generated-plan .plan-summary p:nth-of-type(3)');
+    if (planGoalElement) {
+        planGoalElement.textContent = `Goal: ${goal.charAt(0).toUpperCase() + goal.slice(1)}`;
+    }
+    
+    // Update exercises list
+    const exercisesList = document.querySelector('#generated-plan .exercises-list');
+    if (exercisesList) {
+        exercisesList.innerHTML = '';
+        
+        planExercises.forEach(ex => {
+            const li = document.createElement('li');
+            if (ex.sets && ex.reps) {
+                li.textContent = `${ex.name}: ${ex.sets} sets x ${ex.reps} reps`;
+            } else if (ex.duration) {
+                li.textContent = `${ex.name}: ${ex.duration} minutes (${ex.intensity} intensity)`;
+            }
+            exercisesList.appendChild(li);
+        });
+    }
+    
+    showScreen('generatedPlan');
+    console.log("Workout plan generated:", {level, duration, goal});
+}
+
+// Start plan session
+function startPlanSession() {
+    // Similar to startExerciseSession but for the entire plan
+    // For simplicity, we'll just redirect to the start workout screen
+    showScreen('startWorkout');
+    alert('Plan started! Please select exercises to begin.');
+}
+
+// Change password
+function changePassword() {
+    console.log("Changing password");
+    
+    if (!currentUser) {
+        alert('No user logged in!');
+        return;
+    }
+    
+    const currentPasswordInput = document.getElementById('current-password');
+    const newPasswordInput = document.getElementById('new-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    
+    if (!currentPasswordInput || !newPasswordInput || !confirmPasswordInput) {
+        alert('Password form elements not found!');
+        return;
+    }
+    
+    const currentPassword = currentPasswordInput.value;
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+    
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill in all fields!');
+        return;
+    }
+    
+    if (currentPassword !== currentUser.password) {
+        alert('Current password is incorrect!');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        alert('New passwords do not match!');
+        return;
+    }
+    
+    // Update password
+    currentUser.password = newPassword;
+    
+    // Clear form
+    currentPasswordInput.value = '';
+    newPasswordInput.value = '';
+    confirmPasswordInput.value = '';
+    
+    alert('Password changed successfully!');
+    showScreen('mainApp');
+    console.log("Password changed for:", currentUser.username);
+}
+
+// Save new goal
+function saveGoal() {
+    console.log("Saving new goal");
+    
+    if (!currentUser) {
+        alert('No user logged in!');
+        return;
+    }
+    
+    const goalTitleInput = document.getElementById('goal-title');
+    const goalTargetInput = document.getElementById('goal-target');
+    const goalDateInput = document.getElementById('goal-date');
+    
+    if (!goalTitleInput || !goalTargetInput || !goalDateInput) {
+        alert('Goal form elements not found!');
+        return;
+    }
+    
+    const title = goalTitleInput.value;
+    const target = goalTargetInput.value;
+    const date = goalDateInput.value;
+    
+    if (!title || !target || !date) {
+        alert('Please fill in all fields!');
+        return;
+    }
+    
+    // Add new goal
+    goals.push({
+        title: title,
+        current: '0/' + target,
+        progress: 0,
+        due: date
+    });
+    
+    // Clear form
+    goalTitleInput.value = '';
+    goalTargetInput.value = '';
+    goalDateInput.value = '';
+    
+    // Update current goals
+    populateCurrentGoals();
+    
+    alert('Goal added successfully!');
+    showScreen('currentGoals');
+    console.log("New goal added:", title);
+}
+
+// Populate leaderboard
+function populateLeaderboard() {
+    console.log("Populating leaderboard");
+    
+    const leaderboardBody = document.querySelector('#leaderboard table tbody');
+    if (!leaderboardBody) {
+        console.warn("Leaderboard table body not found!");
+        return;
+    }
+    
+    // Sort users by points (descending)
+    const sortedUsers = [...users].sort((a, b) => b.points - a.points);
+    
+    // Clear and populate table
+    leaderboardBody.innerHTML = '';
+    
+    sortedUsers.forEach((user, index) => {
+        const row = document.createElement('tr');
+        
+        const rankCell = document.createElement('td');
+        rankCell.textContent = index + 1;
+        row.appendChild(rankCell);
+        
+        const usernameCell = document.createElement('td');
+        usernameCell.textContent = user.username;
+        row.appendChild(usernameCell);
+        
+        const badgeCell = document.createElement('td');
+        badgeCell.textContent = user.badge;
+        row.appendChild(badgeCell);
+        
+        const pointsCell = document.createElement('td');
+        pointsCell.textContent = user.points;
+        row.appendChild(pointsCell);
+        
+        const streakCell = document.createElement('td');
+        streakCell.textContent = user.streak;
+        row.appendChild(streakCell);
+        
+        // Highlight current user
+        if (currentUser && user.username === currentUser.username) {
+            row.classList.add('current-user');
+        }
+        
+        leaderboardBody.appendChild(row);
+    });
+}
+
+// Populate workout history
+function populateWorkoutHistory() {
+    console.log("Populating workout history");
+    
+    const historyBody = document.querySelector('#workout-history table tbody');
+    if (!historyBody) {
+        console.warn("Workout history table body not found!");
+        return;
+    }
+    
+    // Clear and populate table
+    historyBody.innerHTML = '';
+    
+    workoutHistory.forEach(workout => {
+        const row = document.createElement('tr');
+        
+        const dateCell = document.createElement('td');
+        dateCell.textContent = workout.date;
+        row.appendChild(dateCell);
+        
+        const exerciseCell = document.createElement('td');
+        exerciseCell.textContent = workout.exercise;
+        row.appendChild(exerciseCell);
+        
+        const durationCell = document.createElement('td');
+        durationCell.textContent = workout.duration;
+        row.appendChild(durationCell);
+        
+        const caloriesCell = document.createElement('td');
+        caloriesCell.textContent = workout.calories;
+        row.appendChild(caloriesCell);
+        
+        const pointsCell = document.createElement('td');
+        pointsCell.textContent = workout.points;
+        row.appendChild(pointsCell);
+        
+        historyBody.appendChild(row);
+    });
+}
+
+// Populate current goals
+function populateCurrentGoals() {
+    console.log("Populating current goals");
+    
+    const goalsContainer = document.querySelector('#current-goals .goals-container');
+    if (!goalsContainer) {
+        console.warn("Goals container not found!");
+        return;
+    }
+    
+    // Clear and populate goals
+    goalsContainer.innerHTML = '';
+    
+    goals.forEach(goal => {
+        const goalElement = document.createElement('div');
+        goalElement.className = 'goal-item';
+        
+        const titleElement = document.createElement('h3');
+        titleElement.textContent = goal.title;
+        goalElement.appendChild(titleElement);
+        
+        const currentElement = document.createElement('p');
+        currentElement.textContent = `Current: ${goal.current}`;
+        goalElement.appendChild(currentElement);
+        
+        const dueElement = document.createElement('p');
+        dueElement.textContent = `Due: ${goal.due}`;
+        goalElement.appendChild(dueElement);
+        
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+        
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+        progressBar.style.width = `${goal.progress}%`;
+        progressBar.textContent = `${goal.progress}%`;
+        
+        progressContainer.appendChild(progressBar);
+        goalElement.appendChild(progressContainer);
+        
+        goalsContainer.appendChild(goalElement);
+    });
+}
+
+// Populate personal bests
+function populatePersonalBests() {
+    console.log("Populating personal bests");
+    
+    const bestsBody = document.querySelector('#personal-bests table tbody');
+    if (!bestsBody) {
+        console.warn("Personal bests table body not found!");
+        return;
+    }
+    
+    // Clear and populate table
+    bestsBody.innerHTML = '';
+    
+    personalBests.forEach(best => {
+        const row = document.createElement('tr');
+        
+        const exerciseCell = document.createElement('td');
+        exerciseCell.textContent = best.exercise;
+        row.appendChild(exerciseCell);
+        
+        const recordCell = document.createElement('td');
+        recordCell.textContent = best.record;
+        row.appendChild(recordCell);
+        
+        const dateCell = document.createElement('td');
+        dateCell.textContent = best.date;
+        row.appendChild(dateCell);
+        
+        bestsBody.appendChild(row);
+    });
+}
+
+// Initialize app on DOM content loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM content loaded, initializing app...");
+    
+    // Initialize screen elements
+    initScreens();
+    
+    // Initialize event listeners
+    initEventListeners();
+    
+    // Populate data
+    populateLeaderboard();
+    populateWorkoutHistory();
+    populateCurrentGoals();
+    populatePersonalBests();
+    
+    // Show welcome screen
+    showScreen('welcomeScreen');
+    
+    console.log("App initialization complete");
+});
+    </script>
+</body>
+</html>
